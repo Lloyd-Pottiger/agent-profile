@@ -7,15 +7,15 @@ description: Disciplined diagnosis loop for bugs, test failures, unexpected beha
 
 A disciplined loop for hard bugs and performance regressions. Use this before proposing fixes.
 
-Core rule: build a reliable feedback loop before changing production code. If there is no fast, agent-runnable pass/fail signal, diagnosis turns into guesswork.
+Establish evidence of the reported failure before changing production code. Prefer an agent-runnable reproduction; use captured traces or other direct evidence when reproduction is unavailable. Do not present an unverified hypothesis as a confirmed cause.
 
-When exploring the codebase, read relevant code, tests, configuration, and docs. Use the project's domain glossary and ADRs when they exist.
+Use the project's domain glossary and ADRs when they exist.
 
 ## Phase 1: Build a Feedback Loop
 
-Spend disproportionate effort here. A good loop is fast, deterministic, and proves the user's symptom, not merely a nearby failure.
+Use the smallest reliable check that demonstrates the user's symptom. For intermittent or hard-to-reproduce failures, invest in improving the signal before attempting a fix.
 
-Try these in roughly this order:
+Choose a suitable feedback mechanism:
 
 1. Failing test at the seam that reaches the bug: unit, integration, or e2e.
 2. CLI or HTTP script with fixture input and expected output.
@@ -35,21 +35,21 @@ Improve the loop before relying on it:
 
 For non-deterministic bugs, raise the reproduction rate first. Loop the trigger, add stress, run in parallel, or inject timing probes until the failure is frequent enough to debug.
 
-If no loop can be built, stop and say what was tried. Ask for access to the reproducing environment, captured artifacts, or permission to add temporary instrumentation. Do not jump to a fix.
+If no loop can be built, document what was tried and inspect available captured evidence. Continue independent investigation within existing authorization. If confirming the cause requires missing access, artifacts, or instrumentation outside that authorization, request the specific prerequisite before the dependent work.
 
 ## Phase 2: Reproduce and Read the Evidence
 
-Run the loop and watch the failure occur.
+Run the reproduction when available. Otherwise, inspect captured evidence and record the conditions it covers and what remains unobserved.
 
 Confirm:
 
 - The failure matches the user-reported symptom.
-- The failure is reproducible, or intermittent at a high enough rate to investigate.
+- The reproduction rate is adequate for investigation, or captured evidence establishes the failure under identified conditions.
 - The exact error, wrong output, or timing regression is captured.
 - Error messages, stack traces, file paths, warning text, and error codes have been read completely.
 - Recent changes have been checked: diffs, commits, dependencies, configuration, environment, data shape, and deployment changes.
 
-Do not proceed until the bug has reproduced or the lack of reproduction is itself documented.
+Evidence of the failure permits further investigation; it does not confirm a cause. If neither reproduction nor captured evidence establishes the reported failure, keep hypotheses provisional and seek the missing evidence before proposing a fix.
 
 ## Phase 3: Compare Working and Broken Paths
 
@@ -98,15 +98,15 @@ If several fix attempts reveal different coupling or shared-state problems, stop
 
 ## Phase 6: Fix and Regression-Test
 
-Fix the root cause, not the symptom.
+Proceed when evidence connects the observed failure to a causal mechanism and supports it over plausible competing hypotheses. Documenting a missing reproduction alone does not satisfy this condition.
 
-1. Convert the minimized reproduction into a failing regression test when there is a correct seam.
+1. Build a regression test from the minimized reproduction or captured failure conditions when there is a correct seam.
 2. Verify the regression test fails before the fix.
 3. Apply the smallest fix that addresses the confirmed cause.
 4. Verify the regression test passes.
-5. Re-run the original Phase 1 loop against the unminimized scenario.
+5. Run the original unminimized scenario when available if it exercises behavior the regression test does not cover. If it remains unavailable, report that limit separately from the regression-test result.
 
-A correct seam exercises the real bug pattern as it occurs at the call site. If no correct seam exists, document that finding; the architecture is preventing the bug from being locked down.
+A correct seam exercises the real bug pattern as it occurs at the call site. If regression coverage cannot be added, document the specific limitation and use an alternative check of the affected behavior. If no adequate check can run, report the candidate fix as unverified rather than declaring the issue fixed.
 
 Use defensive validation only after the root cause is understood. Add it at boundaries where it preserves an invariant or improves failure clarity; do not hide the bug behind fallback behavior.
 
@@ -114,9 +114,8 @@ Use defensive validation only after the root cause is understood. Add it at boun
 
 Before declaring the issue fixed:
 
-- Re-run the original reproduction loop.
-- Run the regression test, or document why no correct seam exists.
-- Remove all temporary debug logs and probes; grep for the debug prefix.
+- Remove all temporary debug logs and probes; search for the debug prefix. Re-run affected checks if cleanup changes the tested behavior.
+- Report the reproduction and regression-test results, or explain why regression coverage could not be added.
 - Delete throwaway harnesses or move them to a clearly marked debug location if intentionally retained.
 - State the confirmed cause and evidence in the commit or PR message.
 

@@ -7,7 +7,7 @@ description: Turn an approved plan, specification, or conversation into dependen
 
 Break a plan, spec, or conversation into a set of **tickets** — tracer-bullet vertical slices, each declaring the tickets that **block** it.
 
-Resolve the publication destination from the user's request, repository documentation or configuration, and available tracker integrations. If no single destination is explicit or unambiguous, draft the tickets first and ask where to publish them; do not invent a tracker, directory, labels, or workflow conventions.
+Publication must be within the user's requested scope; a known tracker alone is not authorization. Resolve the publication destination from the user's request, repository documentation or configuration, and available tracker integrations. For draft-only requests, return the draft. If requested publication has no single explicit or unambiguous destination, draft the tickets first and ask where to publish them; do not invent a tracker, directory, labels, or workflow conventions.
 
 ## Process
 
@@ -46,13 +46,13 @@ Present the proposed breakdown as a numbered list. For each ticket, show:
 - **Blocked by**: which other tickets (if any) must complete first
 - **What it delivers**: the end-to-end behaviour this ticket makes work
 
-Ask the user:
+If this breakdown has not already been approved, ask the user:
 
 - Does the granularity feel right? (too coarse / too fine)
 - Are the blocking edges correct — does each ticket only depend on tickets that genuinely gate it?
 - Should any tickets be merged or split further?
 
-Iterate until the user approves the breakdown.
+Use an existing approval of this breakdown when it remains applicable; otherwise iterate until the user approves it. Seek renewed approval only if the breakdown materially changes.
 
 ### 5. Publish the tickets
 
@@ -105,4 +105,4 @@ The end-to-end behaviour this ticket makes work, from the user's perspective —
 
 In either form, avoid specific file paths or code snippets — they go stale fast. Exception: if a prototype produced a snippet that encodes a decision more precisely than prose can (state machine, reducer, schema, type shape), inline it and note briefly that it came from a prototype. Trim to the decision-rich parts — not a working demo, just the important bits.
 
-After publication, implementation proceeds from the frontier: any ticket whose blockers are complete. Treat each ticket as a fresh implementation task and verify its acceptance criteria before moving to a dependent ticket.
+Implement tickets only when the user also authorizes implementation. Then proceed from the frontier: any ticket whose blockers are complete. Treat each ticket as a fresh implementation task and verify its acceptance criteria before moving to a dependent ticket.

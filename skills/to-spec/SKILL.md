@@ -7,7 +7,7 @@ description: Synthesize the current conversation and codebase into a concise pro
 
 Turn the current conversation and verified codebase context into a spec (also called a PRD). Synthesize settled information rather than restarting discovery. Ask only when an unresolved requirement would materially change the spec or the publication destination cannot be determined safely.
 
-Resolve the destination from the user's request, repository documentation or configuration, and available tracker integrations. Publish only when one destination is explicit or unambiguous. Otherwise return the draft in the response and ask where it should be published; do not invent a tracker, local directory, or label vocabulary.
+Resolve the destination from the user's request, repository documentation or configuration, and available tracker integrations. Publish when the request includes publication and one destination is explicit or unambiguous. For a draft-only request, return the draft. If requested publication lacks a clear destination, prepare the draft before asking where to publish it; do not invent a tracker, local directory, or label vocabulary.
 
 ## Process
 
@@ -15,7 +15,7 @@ Resolve the destination from the user's request, repository documentation or con
 
 2. Identify the observable seams at which the feature can be accepted and tested. Prefer an existing public seam that proves the behavior without coupling tests to implementation details. Add a new seam only when the contract cannot be verified cleanly through the existing design.
 
-3. Write the spec using the template below. Publish it to the resolved destination. Apply an existing `ready-for-agent` label only when that is the project's established convention; do not create repository workflow policy as a side effect of publishing a spec.
+3. Write the spec using the template below. Publish it to the resolved destination when authorized. Apply an existing `ready-for-agent` label only when that is the project's established convention; do not create repository workflow policy as a side effect of publishing a spec.
 
 <spec-template>
 

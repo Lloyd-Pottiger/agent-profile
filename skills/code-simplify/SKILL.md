@@ -22,14 +22,6 @@ Load the language-specific coder skill before applying this workflow:
 
 If no language-specific coder skill exists, still follow this cleanup workflow and stay consistent with the repo's local rules.
 
-## Common Triggers
-
-- "simplify this patch/branch/PR before merge"
-- "clean up this diff" or "trim this refactor"
-- "find reuse opportunities" or "dedupe this code"
-- "remove scaffolding / hacky code / temporary helpers"
-- "too many tests", "redundant tests", or "TDD left a noisy diff"
-
 ## Guardrails
 
 - **Scope guard:** default to changes tightly coupled to the current diff. Avoid broad drive-by refactors, but do widen the work within the affected design seam when a smaller patch would preserve duplicated logic, awkward ownership, or repeated special cases. If the cleanup must go beyond that seam, either get explicit user buy-in or call it out as a separate refactor.
@@ -92,14 +84,6 @@ Good reasons to delete or merge a test:
 - a clearer final test already subsumes it
 - it asserts internal helper shape rather than observable behavior
 - several tests differ only by literals and belong in one table
-
-## Red Flags
-
-- "Leave it in for safety" when no distinct behavior depends on it
-- "This helper might be useful later" without a second real caller
-- "Tests are cheap, keep them all" when several tests protect the same behavior
-- "I already touched this area, may as well clean everything nearby" when the extra refactor is outside the task's safe scope
-- "A new abstraction is cleaner" before trying deletion, reuse, or merge
 
 ## Example
 

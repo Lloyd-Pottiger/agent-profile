@@ -1,6 +1,6 @@
 ---
 name: using-git-worktrees
-description: Use when starting feature work that needs isolation from the current workspace or before executing implementation plans - creates isolated git worktrees, preferring the canonical project-adjacent <repo>.worktrees directory unless the user or repository explicitly requests another path
+description: Use when starting feature work that needs isolation from the current workspace or before executing implementation plans - creates isolated git worktrees, preferring the canonical project-adjacent worktree root unless the user or repository explicitly requests another path
 ---
 
 # Using Git Worktrees
@@ -160,9 +160,9 @@ if [ -f pyproject.toml ]; then poetry install; fi
 if [ -f go.mod ]; then go mod download; fi
 ```
 
-### 4. Verify Clean Baseline
+### 4. Verify the Baseline
 
-Run tests to ensure worktree starts clean:
+Run checks relevant to the planned change and any repository-required baseline gates:
 
 ```bash
 # Examples - use project-appropriate command
@@ -172,15 +172,15 @@ pytest
 go test ./...
 ```
 
-**If tests fail:** Report failures, ask whether to proceed or investigate.
+**If checks fail:** Record the baseline failure and determine whether it blocks verification of the planned change or a required gate. Continue independent authorized work for unrelated failures; ask only when a missing prerequisite or material decision requires user input.
 
-**If tests pass:** Report ready.
+**If checks pass:** Report ready. Do not broaden or repeat checks without a new change, failure, or unresolved concern.
 
 ### 5. Report Location
 
 ```
 Worktree ready at <full-path>
-Tests passing (<N> tests, 0 failures)
+Baseline checks: <commands and results; any blockers>
 Ready to implement <feature-name>
 ```
 
@@ -194,7 +194,7 @@ Ready to implement <feature-name>
 | Sibling `<repo>.worktrees/` already exists | Use it |
 | None exists | Use canonical sibling `<repo>.worktrees/` from the primary worktree |
 | Explicit repository-internal directory not ignored | Add to `.git/info/exclude` by default |
-| Tests fail during baseline | Report failures + ask |
+| Baseline checks fail | Record failures and identify blocked checks; continue independent authorized work |
 | No package.json/Cargo.toml | Skip dependency install |
 
 ## Common Mistakes
@@ -209,10 +209,10 @@ Ready to implement <feature-name>
 - **Problem:** Creates inconsistency, violates project conventions, or scatters worktrees into unrelated global config directories
 - **Fix:** Follow priority: user/repo instructions > canonical sibling `<repo>.worktrees/`; when invoked inside an existing linked worktree, reuse the existing `<repo>.worktrees` root instead of nesting a new `<branch>.worktrees`
 
-### Proceeding with failing tests
+### Unclassified baseline failures
 
-- **Problem:** Can't distinguish new bugs from pre-existing issues
-- **Fix:** Report failures, get explicit permission to proceed
+- **Problem:** Cannot distinguish new bugs from pre-existing issues
+- **Fix:** Record baseline failures and identify which checks they block before relying on later results
 
 ### Hardcoding setup commands
 
@@ -240,8 +240,8 @@ Ready to implement auth feature
 - Create repository-internal worktree without verifying it's ignored
 - Use repository-internal `.worktrees/` or `worktrees/` just because it exists
 - Default to a config-owned global path such as `~/.config/superpowers`
-- Skip baseline test verification
-- Proceed with failing tests without asking
+- Skip relevant baseline checks or required gates
+- Treat a failed or blocked baseline check as passing
 - Assume directory location when ambiguous
 - Skip repository instruction checks
 
@@ -250,7 +250,7 @@ Ready to implement auth feature
 - Reuse the parent `<repo>.worktrees/` root when invoked from `<repo>.worktrees/<branch>`
 - Verify directory is ignored for explicitly requested repository-internal roots
 - Auto-detect and run project setup
-- Verify clean test baseline
+- Record baseline check results and any limits on verification
 
 ## Integration
 
