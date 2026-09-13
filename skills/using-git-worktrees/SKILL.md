@@ -1,6 +1,6 @@
 ---
 name: using-git-worktrees
-description: Use when starting feature work that needs isolation from the current workspace or before executing implementation plans - creates isolated git worktrees, preferring the canonical project-adjacent worktree root unless the user or repository explicitly requests another path
+description: Use when feature work needs isolation from the current workspace. Create isolated git worktrees in the canonical project-adjacent root unless the user or repository specifies another path.
 ---
 
 # Using Git Worktrees
@@ -143,22 +143,7 @@ cd "$path"
 
 ### 3. Run Project Setup
 
-Auto-detect and run appropriate setup:
-
-```bash
-# Node.js
-if [ -f package.json ]; then npm install; fi
-
-# Rust
-if [ -f Cargo.toml ]; then cargo build; fi
-
-# Python
-if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-if [ -f pyproject.toml ]; then poetry install; fi
-
-# Go
-if [ -f go.mod ]; then go mod download; fi
-```
+Install dependencies only when they are missing for checks needed by the planned change. Use the repository's documented setup commands and package manager, consulting lockfiles and configuration as needed. Build only when required for those checks; the presence of a project manifest alone does not require setup.
 
 ### 4. Verify the Baseline
 
@@ -195,7 +180,7 @@ Ready to implement <feature-name>
 | None exists | Use canonical sibling `<repo>.worktrees/` from the primary worktree |
 | Explicit repository-internal directory not ignored | Add to `.git/info/exclude` by default |
 | Baseline checks fail | Record failures and identify blocked checks; continue independent authorized work |
-| No package.json/Cargo.toml | Skip dependency install |
+| Required checks already have their dependencies | Skip dependency install |
 
 ## Common Mistakes
 
@@ -217,7 +202,7 @@ Ready to implement <feature-name>
 ### Hardcoding setup commands
 
 - **Problem:** Breaks on projects using different tools
-- **Fix:** Auto-detect from project files (package.json, etc.)
+- **Fix:** Use repository setup conventions and install only dependencies missing for the required checks
 
 ## Example Workflow
 
@@ -249,7 +234,7 @@ Ready to implement auth feature
 - Follow directory priority: user/repo instructions > canonical sibling `<repo>.worktrees/`
 - Reuse the parent `<repo>.worktrees/` root when invoked from `<repo>.worktrees/<branch>`
 - Verify directory is ignored for explicitly requested repository-internal roots
-- Auto-detect and run project setup
+- Run only setup needed by the planned checks, following repository conventions
 - Record baseline check results and any limits on verification
 
 ## Integration

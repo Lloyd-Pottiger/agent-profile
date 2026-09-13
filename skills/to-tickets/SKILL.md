@@ -36,9 +36,9 @@ Break the work into **tracer bullet** tickets.
 
 Give each ticket its **blocking edges** — the other tickets that must complete before it can start. A ticket with no blockers can start immediately.
 
-**Wide refactors are the exception to vertical slicing.** A **wide refactor** is one mechanical change — rename a column, retype a shared symbol — whose **blast radius** fans across the whole codebase, so a single edit breaks thousands of call sites at once and no vertical slice can land green. Don't force it into a tracer bullet; sequence it as **expand–contract**. First expand: add the new form beside the old so nothing breaks. Then migrate the call sites over in batches sized by blast radius (per package, per directory), each batch its own ticket blocked by the expand, keeping CI green batch to batch because the old form still exists. Finally contract: delete the old form once no caller remains, in a ticket blocked by every migrate batch. When even the batches can't stay green alone, keep the sequence but let them share an integration branch that all block a final integrate-and-verify ticket — green is promised only there.
+**Wide refactors are the exception to vertical slicing.** A **wide refactor** is one mechanical change — rename a column, retype a shared symbol — whose **blast radius** fans across the codebase. When all consumers can move atomically, use one mechanical change with unified verification; do not add compatibility machinery solely because there are many call sites. Use **expand–contract** only when consumers cannot migrate atomically or intermediate versions must remain independently releasable: add the new form, migrate callers in verifiable batches, then remove the old form once no consumer depends on it. Give migration tickets explicit dependencies on expansion, and cleanup tickets on the required migrations.
 
-### 4. Quiz the user
+### 4. Resolve material breakdown decisions
 
 Present the proposed breakdown as a numbered list. For each ticket, show:
 
@@ -46,17 +46,17 @@ Present the proposed breakdown as a numbered list. For each ticket, show:
 - **Blocked by**: which other tickets (if any) must complete first
 - **What it delivers**: the end-to-end behaviour this ticket makes work
 
-If this breakdown has not already been approved, ask the user:
+If the user requested review before publication, or the breakdown introduces material scope, dependency, or delivery trade-offs, ask about the unresolved decisions, such as:
 
 - Does the granularity feel right? (too coarse / too fine)
 - Are the blocking edges correct — does each ticket only depend on tickets that genuinely gate it?
 - Should any tickets be merged or split further?
 
-Use an existing approval of this breakdown when it remains applicable; otherwise iterate until the user approves it. Seek renewed approval only if the breakdown materially changes.
+Reuse existing approval when it remains applicable. Otherwise wait for approval only under the conditions above; when the user has authorized ticket creation and publication and no such decision remains, continue without a separate breakdown approval.
 
 ### 5. Publish the tickets
 
-Publish only the approved tickets to the resolved destination. Preserve the dependency graph using the destination's existing conventions:
+Publish tickets within the user's authorization to the resolved destination, after any required review or material decision is resolved. Preserve the dependency graph using the destination's existing conventions:
 
 - **Repository-local tracker** → follow its documented location and format. Write one artifact per ticket in dependency order, and record blockers by stable ticket identifier and title.
 - **External issue tracker** → publish one issue per ticket in dependency order so blocking edges can reference real identifiers. Prefer native dependency relationships; otherwise record a `Blocked by` list in the issue body.

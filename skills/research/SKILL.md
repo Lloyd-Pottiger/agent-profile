@@ -5,15 +5,15 @@ description: Investigate a question against high-trust primary sources and captu
 
 # Research
 
-Delegate a bounded research question to a background agent so independent work can continue in parallel.
+Investigate a bounded research question locally. Delegate only when the user explicitly authorizes delegation and it offers a concrete benefit such as context isolation or parallel progress.
 
-1. Define the exact question, scope, and output path before delegation. Follow the repository's existing research-note convention; if none exists, choose a concise repo-local path and report it.
-2. Spawn one background agent with the question, relevant repository context, output path, and the evidence contract below. Give it the research task directly; do not ask it to invoke `$research` again.
-3. Require the background agent to:
+1. Define the exact question, scope, and output path. Follow the repository's existing research-note convention; if none exists, choose a concise repo-local path and report it.
+2. Research locally, or, when delegation is authorized and useful, spawn one background agent with the question, relevant repository context, output path, and the evidence contract below. Give it the research task directly; do not ask it to invoke `$research` again.
+3. In either mode:
    - use high-trust primary sources such as official documentation, source code, specifications, and first-party APIs;
    - trace material claims to the source that owns them, distinguish evidence from inference, and expose conflicting or missing evidence;
    - write one self-contained Markdown file with findings and citations at the assigned path;
    - avoid modifying implementation, tracker state, or unrelated files.
-4. Continue independent work while the agent researches. Before reporting the research complete, wait for it, inspect the artifact, and verify that the question is answered and material claims are source-backed.
+4. When delegating, continue independent work while the agent researches and wait for its result before reporting completion. In either mode, inspect the artifact and verify that the question is answered and material claims are source-backed.
 
-For multiple independent questions, use one agent and one non-conflicting artifact per question, parallelized within the environment's available agent capacity.
+When delegation is authorized and useful for multiple independent questions, use one agent and one non-conflicting artifact per question, parallelized within the environment's available agent capacity.

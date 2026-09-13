@@ -46,16 +46,16 @@ parallel exploration
          |
 parallel worktree writers
          |
- per-slice review and fixes
+ per-slice review and fixes (when warranted)
          |
       integration
          |
- holistic review and fixes
+ holistic review and fixes (when warranted)
          |
  terminal verification
 ```
 
-Exploration outputs are evidence, not automatically design decisions. The design node or main agent must resolve conflicts and publish one accepted design artifact before writers start. Per-slice review checks each implementation contract; holistic review checks cross-slice behavior and integration risks. Modifications invalidate only the descendants whose inputs changed.
+Exploration outputs are evidence, not automatically design decisions. The design node or main agent must resolve conflicts and publish one accepted design artifact before writers start. Choose per-slice review for local risks or holistic review for cross-slice behavior and integration risks; use both only when distinct risks warrant separate reviews. Modifications invalidate only the descendants whose inputs changed.
 
 ## General Dependency DAG
 

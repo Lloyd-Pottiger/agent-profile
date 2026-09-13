@@ -75,7 +75,7 @@ Mark a node `accepted` only after validation. Then recompute the ready set and r
 
 Integrate accepted writer commits in dependency order. Before accepting each commit, inspect its exact diff and verification. After integration, resolve conflicts and incompatible assumptions in the integrated checkout; do not push that responsibility back to workers whose local slices were individually correct.
 
-Run slice review against the slice artifact and holistic review against the integrated artifact. Any modification after review creates a new artifact version: invalidate affected findings and rerun the review or verification whose evidence no longer applies.
+Choose slice review or holistic review according to the risks of the change. Use both only when distinct local risks and cross-slice interaction risks warrant separate reviews. Any modification after review creates a new artifact version: invalidate affected findings and rerun the review or verification whose evidence no longer applies.
 
 Verify the terminal integrated artifact locally. Subagent checks and per-branch tests do not replace integrated verification.
 

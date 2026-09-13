@@ -47,11 +47,11 @@ Present a numbered list of deepening opportunities. For each candidate:
 
 **ADR conflicts**: if a candidate contradicts an existing ADR, only surface it when the friction is real enough to warrant revisiting the ADR. Mark it clearly (e.g. _"contradicts ADR-0007 — but worth reopening because…"_). Don't list every theoretical refactor an ADR forbids.
 
-Do NOT propose interfaces yet. Ask the user: "Which of these would you like to explore?"
+If the exploration target is not yet determined, ask the user: "Which of these would you like to explore?" If the user has already specified a module or candidate, continue its analysis and design directly.
 
 ### 3. Grilling loop
 
-Once the user picks a candidate, drop into a grilling conversation. Walk the design tree with them — constraints, dependencies, the shape of the deepened module, what sits behind the seam, what tests survive.
+For the selected or user-specified candidate, work through constraints, dependencies, the shape of the deepened module, what sits behind the seam, and what tests survive. Ask only about unresolved material decisions; continue analysis and design when the available context is sufficient.
 
 Side effects happen inline as decisions crystallize:
 
